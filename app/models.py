@@ -27,6 +27,13 @@ class Employee(models.Model):
 
     objects = models.Manager()
     active_objects = ActiveEmployeeManager()
+    
+    services = models.ManyToManyField(
+        'Service', 
+        through='EmployeeService', 
+        related_name='employees', 
+        verbose_name="Оказываемые услуги"
+    )
 
     class Meta:
         verbose_name = "Мастер"
@@ -59,10 +66,12 @@ class EmployeeService(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     service = models.ForeignKey(Service, on_delete=models.CASCADE)
 
+    is_primary_skill = models.BooleanField(default=True, verbose_name="Является ли основным профилем мастера")
+
     class Meta:
         verbose_name = "Услуга мастера"
         verbose_name_plural = "Услуги мастеров"
-
+        unique_together = ('employee', 'service')
 
 class Client(models.Model):
     first_name = models.CharField(max_length=100, verbose_name="Имя")
