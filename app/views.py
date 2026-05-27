@@ -132,7 +132,6 @@ def home_view(request):
     # Выбираем активных мастеров, исключаем тех, у кого нет аватарки,
     # считаем количество их записей (агрегация COUNT) и сортируем по убыванию
     top_masters = Employee.objects.filter(is_active=True)\
-                                  .exclude(avatar='')\
                                   .annotate(appointments_count=Count('appointments'))\
                                   .order_by('-appointments_count')[:4]
 

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Бьюти-салон | Главная</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container py-5">
+    
+    <div class="row mb-5 justify-content-center">
+        <div class="col-md-8 text-center">
+            <h1 class="mb-4">Добро пожаловать в наш салон</h1>
+            <form method="GET" action="{% url 'home' %}" class="d-flex">
+                <input class="form-control form-control-lg me-2" type="search" name="q" placeholder="Какую услугу вы ищете? (например: стрижка)" value="{{ search_query }}">
+                <button class="btn btn-primary btn-lg" type="submit">Найти</button>
+            </form>
+        </div>
+    </div>
+
+    {% if search_query %}
+    <div class="card mb-5 shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Результаты поиска по запросу: "{{ search_query }}"</h5>
+        </div>
+        <ul class="list-group list-group-flush">
+            {% for service in search_results %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="mb-0">{{ service.title }}</h6>
+                        <small class="text-muted">{{ service.category.title }} | {{ service.duration_minutes }} мин.</small>
+                    </div>
+                    <div>
+                        <span class="badge bg-success rounded-pill fs-6">{{ service.price }} ₽</span>
+                        <button class="btn btn-sm btn-outline-primary ms-2">Записаться</button>
+                    </div>
+                </li>
+            {% empty %}
+                <li class="list-group-item text-center text-muted">По вашему запросу ничего не найдено.</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">Наши направления</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    {% for cat in categories %}
+                    <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                        {{ cat.title }}
+                        <span class="badge bg-secondary rounded-pill">{{ cat.services_count }} услуг</span>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="alert alert-info shadow-sm">
+                <strong>Наши специализации:</strong><br>
+                {% for spec in unique_specialties %}
+                    <span class="badge bg-info text-dark">{{ spec }}</span>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <h4 class="mb-3">Топ мастеров месяца</h4>
+            <div class="row row-cols-1 row-cols-md-2 g-4">
+                {% for master in top_masters %}
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        {% if master.avatar %}
+                            <img src="{{ master.avatar.url }}" class="card-img-top" alt="{{ master.first_name }}" style="height: 200px; object-fit: cover;">
+                        {% else %}
+                            <div class="card-img-top bg-secondary d-flex justify-content-center align-items-center text-white" style="height: 200px;">Нет фото</div>
+                        {% endif %}
+                        
+                        <div class="card-body">
+                            <h5 class="card-title">{{ master.first_name }}</h5>
+                            <p class="card-text text-muted">{{ master.specialty }}</p>
+                        </div>
+                        <div class="card-footer bg-transparent d-flex justify-content-between align-items-center">
+                            <small class="text-muted">Проведено сеансов: <strong>{{ master.appointments_count }}</strong></small>
+                            <a href="#" class="btn btn-sm btn-dark">Профиль</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
