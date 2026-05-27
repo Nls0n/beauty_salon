@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('app', '0004_employee_avatar_employee_certificate'),
+        ("app", "0004_employee_avatar_employee_certificate"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='client',
-            name='social_profile',
-            field=models.URLField(blank=True, null=True, verbose_name='Ссылка на профиль (VK/TG)'),
+            model_name="client",
+            name="social_profile",
+            field=models.URLField(blank=True, null=True, verbose_name="Ссылка на профиль (VK/TG)"),
         ),
     ]

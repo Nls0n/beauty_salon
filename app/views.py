@@ -1,7 +1,9 @@
 from django import forms
+from django.db import models
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
-from .models import Appointment, Employee, Service, Client
+
+from .models import Appointment, Client, Employee, Service
 
 
 class ServiceForm(forms.ModelForm):
@@ -73,44 +75,45 @@ def employee_delete_view(request, pk):
         return redirect("dashboard")  # Редирект после успешного удаления
     return render(request, "app/employee_confirm_delete.html", {"employee": employee})
 
-def analytics_view(request):    
+
+def analytics_view(request):
     # __contains — поиск с учетом регистра (case-sensitive)
-    exact_match_services = Service.objects.filter(title__contains="стрижка") 
-    
+    exact_match_services = Service.objects.filter(title__contains="стрижка")
+
     # __icontains — поиск без учета регистра (case-insensitive)
     any_case_services = Service.objects.filter(title__icontains="стрижка")
 
-    services_dicts = Service.objects.values('title', 'price')
-    
+    services_dicts = Service.objects.values("title", "price")
+
     # values_list() возвращает QuerySet, состоящий из КОРТЕЖЕЙ ('значение1', 'значение2')
     # Если передать flat=True (работает только для одного поля), вернет простой плоский список значений
-    client_phones = Client.objects.values_list('phone_number', flat=True)
+    client_phones = Client.objects.values_list("phone_number", flat=True)
 
     # count() делает в базе 'SELECT COUNT(*)' вместо вытягивания записей в Python
     total_appointments = Appointment.objects.count()
-    
+
     # exists() возвращает True/False. Оптимизирует запрос, завершая его, как только найдена ХОТЯ БЫ одна запись
     has_broken_clients = Client.objects.filter(phone_number="").exists()
 
-    trigger_action = request.GET.get('action')
-    
-    if trigger_action == 'mass_discount':
+    trigger_action = request.GET.get("action")
+
+    if trigger_action == "mass_discount":
         # update() выполняется на уровне SQL и НЕ вызывает метод save() модели
-        Service.objects.filter(price__gt=3000).update(price=models.F('price') - 300)
-        return redirect('analytics')
-        
-    elif trigger_action == 'clean_canceled':
+        Service.objects.filter(price__gt=3000).update(price=models.F("price") - 300)
+        return redirect("analytics")
+
+    elif trigger_action == "clean_canceled":
         month_ago = timezone.now() - timezone.timedelta(days=30)
-        Appointment.objects.filter(status='canceled', appointment_datetime__lt=month_ago).delete()
-        return redirect('analytics')
+        Appointment.objects.filter(status="canceled", appointment_datetime__lt=month_ago).delete()
+        return redirect("analytics")
 
     context = {
-        'exact_match_services': exact_match_services,
-        'any_case_services': any_case_services,
-        'services_dicts': services_dicts[:5],  
-        'client_phones': list(client_phones)[:5],
-        'total_appointments': total_appointments,
-        'has_broken_clients': has_broken_clients,
+        "exact_match_services": exact_match_services,
+        "any_case_services": any_case_services,
+        "services_dicts": services_dicts[:5],
+        "client_phones": list(client_phones)[:5],
+        "total_appointments": total_appointments,
+        "has_broken_clients": has_broken_clients,
     }
-    
-    return render(request, 'app/analytics.html', context)
+
+    return render(request, "app/analytics.html", context)

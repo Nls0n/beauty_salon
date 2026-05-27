@@ -71,10 +71,11 @@ class EmployeeService(models.Model):
 
 from django.db import models
 
+
 class Client(models.Model):
     first_name = models.CharField(max_length=100, verbose_name="Имя")
     phone_number = models.CharField(max_length=20, verbose_name="Телефон")
-    favorite_masters = models.ManyToManyField('Employee', blank=True, related_name='favorite_clients', verbose_name="Любимые мастера")
+    favorite_masters = models.ManyToManyField("Employee", blank=True, related_name="favorite_clients", verbose_name="Любимые мастера")
     registration_date = models.DateTimeField(default=timezone.now, verbose_name="Дата регистрации")
 
     social_profile = models.URLField(max_length=200, blank=True, null=True, verbose_name="Ссылка на профиль (VK/TG)")
