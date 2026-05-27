@@ -4,8 +4,9 @@ from django.db.models import Count
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
-from .models import Appointment, Client, Employee, Service, Category
 from .forms import EmployeeForm
+from .models import Appointment, Category, Client, Employee, Service
+
 
 class ServiceForm(forms.ModelForm):
     class Meta:
@@ -153,38 +154,42 @@ def home_view(request):
 
 
 def employee_list_view(request):
-    employees = Employee.objects.all().order_by('-id')
-    return render(request, 'app/employee_list.html', {'employees': employees})
+    employees = Employee.objects.all().order_by("-id")
+    return render(request, "app/employee_list.html", {"employees": employees})
+
 
 def employee_detail_view(request, pk):
     employee = get_object_or_404(Employee, pk=pk)
     services = employee.services.all()
-    return render(request, 'app/employee_detail.html', {'employee': employee, 'services': services})
+    return render(request, "app/employee_detail.html", {"employee": employee, "services": services})
+
 
 def employee_create_view(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         form = EmployeeForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('employee_list')
+            return redirect("employee_list")
     else:
         form = EmployeeForm()
-    return render(request, 'app/employee_form.html', {'form': form, 'action': 'Добавить мастера'})
+    return render(request, "app/employee_form.html", {"form": form, "action": "Добавить мастера"})
+
 
 def employee_update_view(request, pk):
     employee = get_object_or_404(Employee, pk=pk)
-    if request.method == 'POST':
+    if request.method == "POST":
         form = EmployeeForm(request.POST, instance=employee)
         if form.is_valid():
             form.save()
-            return redirect('employee_list')
+            return redirect("employee_list")
     else:
         form = EmployeeForm(instance=employee)
-    return render(request, 'app/employee_form.html', {'form': form, 'action': 'Редактировать мастера'})
+    return render(request, "app/employee_form.html", {"form": form, "action": "Редактировать мастера"})
+
 
 def employee_delete_view(request, pk):
     employee = get_object_or_404(Employee, pk=pk)
-    if request.method == 'POST':
+    if request.method == "POST":
         employee.delete()
-        return redirect('employee_list')
-    return render(request, 'app/employee_confirm_delete.html', {'employee': employee})
+        return redirect("employee_list")
+    return render(request, "app/employee_confirm_delete.html", {"employee": employee})
