@@ -1,10 +1,16 @@
 PYTHON = uv run python
 MANAGE = $(PYTHON) manage.py
 
-.PHONY: help run migrate migrations superuser shell check-db ruff format clean fix
+.PHONY: help run migrate migrations superuser shell check-db ruff format clean fix up install 
+
+
+install:
+	docker-compose up -d 
 
 run:
 	$(MANAGE) runserver
+	
+up: install run	
 
 migrations:
 	$(MANAGE) makemigrations
