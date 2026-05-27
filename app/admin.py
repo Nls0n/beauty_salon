@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Category, Service, Employee, EmployeeService, Client, Appointment
+
+from .models import Appointment, Category, Client, Employee, EmployeeService, Service
 
 
 @admin.register(Category)
@@ -17,7 +18,6 @@ class ServiceAdmin(admin.ModelAdmin):
     raw_id_fields = ('category',)
 
 
-# Inline-интерфейс для редактирования услуг прямо в карточке сотрудника
 class EmployeeServiceInline(admin.TabularInline):
     model = EmployeeService
     extra = 1
@@ -42,20 +42,17 @@ class ClientAdmin(admin.ModelAdmin):
 @admin.register(Appointment)
 class AppointmentAdmin(admin.ModelAdmin):
     list_display = ('id', 'client', 'employee', 'service', 'appointment_datetime', 'status')
-    
-    # Использование полей связанных моделей в фильтрах (__поле)
+
     list_filter = ('status', 'appointment_datetime', 'employee__position', 'service__category')
-    
-    # Глубокий поиск по именам клиентов, мастеров и названиям услуг
+
     search_fields = (
-        'client__first_name', 
-        'client__phone_number', 
-        'employee__first_name', 
-        'employee__last_name', 
+        'client__first_name',
+        'client__phone_number',
+        'employee__first_name',
+        'employee__last_name',
         'service__name'
     )
-    
-    # Исключаем просадку производительности при тысячах клиентов/мастеров/услуг
+
     raw_id_fields = ('client', 'employee', 'service')
-    
-    date_hierarchy = 'appointment_datetime'  # Удобная навигация по датам вверху админки
+
+    date_hierarchy = 'appointment_datetime'

@@ -14,9 +14,9 @@ class Category(models.Model):
 
 class Service(models.Model):
     category = models.ForeignKey(
-        Category, 
-        on_delete=models.CASCADE, 
-        related_name="services", 
+        Category,
+        on_delete=models.CASCADE,
+        related_name="services",
         verbose_name="Категория"
     )
     name = models.CharField(max_length=255, verbose_name="Название услуги")
@@ -36,10 +36,10 @@ class Employee(models.Model):
     last_name = models.CharField(max_length=100, verbose_name="Фамилия")
     position = models.CharField(max_length=100, blank=True, null=True, verbose_name="Должность")
     bio = models.TextField(blank=True, null=True, verbose_name="О мастере")
-    
+
     services = models.ManyToManyField(
-        Service, 
-        through='EmployeeService', 
+        Service,
+        through='EmployeeService',
         related_name='employees',
         verbose_name="Оказываемые услуги"
     )
