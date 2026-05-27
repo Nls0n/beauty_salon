@@ -1,7 +1,8 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse
-from .models import Service, Appointment, Employee
 from django import forms
+from django.shortcuts import get_object_or_404, redirect, render
+
+from .models import Appointment, Employee, Service
+
 
 class ServiceForm(forms.ModelForm):
     class Meta:
@@ -16,7 +17,7 @@ class ServiceForm(forms.ModelForm):
 
 
 def DashboardView(request):
-    
+
     appointments = Appointment.objects.select_related('client', 'employee', 'service').all()
 
     employees = Employee.objects.prefetch_related('services').all()
@@ -34,7 +35,7 @@ def service_create_view(request):
     if request.method == 'POST':
         form = ServiceForm(request.POST)
         if form.is_valid():
-            form.save() 
+            form.save()
             return redirect('dashboard')
     else:
         form = ServiceForm()
@@ -46,7 +47,7 @@ def service_edit_view(request, pk):
     if request.method == 'POST':
         form = ServiceForm(request.POST, instance=service)
         if form.is_valid():
-            form.save() 
+            form.save()
             return redirect('dashboard')
     else:
         form = ServiceForm(instance=service)
@@ -56,6 +57,6 @@ def service_edit_view(request, pk):
 def service_delete_view(request, pk):
     service = get_object_or_404(Service, pk=pk)
     if request.method == 'POST':
-        service.delete() 
+        service.delete()
         return redirect('dashboard')
     return render(request, 'app/service_confirm_delete.html', {'service': service})

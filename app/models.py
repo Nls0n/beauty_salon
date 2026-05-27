@@ -27,11 +27,11 @@ class Employee(models.Model):
 
     objects = models.Manager()
     active_objects = ActiveEmployeeManager()
-    
+
     services = models.ManyToManyField(
-        'Service', 
-        through='EmployeeService', 
-        related_name='employees', 
+        'Service',
+        through='EmployeeService',
+        related_name='employees',
         verbose_name="Оказываемые услуги"
     )
 
