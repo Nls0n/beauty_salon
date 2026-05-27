@@ -9,4 +9,9 @@ urlpatterns = [
     path("service/<int:pk>/delete/", views.service_delete_view, name="service_delete"),
     path("analytics/", views.analytics_view, name="analytics"),
     path("", views.home_view, name="home"),
+    path('masters/', views.employee_list_view, name='employee_list'),
+    path('masters/<int:pk>/', views.employee_detail_view, name='employee_detail'),
+    path('masters/create/', views.employee_create_view, name='employee_create'),
+    path('masters/<int:pk>/update/', views.employee_update_view, name='employee_update'),
+    path('masters/<int:pk>/delete/', views.employee_delete_view, name='employee_delete'),
 ]

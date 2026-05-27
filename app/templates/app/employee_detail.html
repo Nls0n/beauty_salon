@@ -1,0 +1,24 @@
+{% extends 'app/base.html' %}
+{% block title %}Профиль мастера{% endblock %}
+{% block content %}
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-primary text-white">
+        <h4>Мастер: {{ employee.first_name }}</h4>
+    </div>
+    <div class="card-body">
+        <p><strong>Специализация:</strong> {{ employee.specialty }}</p>
+        <p><strong>Активен:</strong> {% if employee.is_active %} Да {% else %} Нет {% endif %}</p>
+        <a href="{% url 'employee_update' employee.id %}" class="btn btn-warning">Редактировать</a>
+        <a href="{% url 'employee_list' %}" class="btn btn-secondary">Назад к списку</a>
+    </div>
+</div>
+
+<h4>Оказываемые услуги:</h4>
+<ul class="list-group">
+    {% for service in services %}
+        <li class="list-group-item">{{ service.title }} — {{ service.price }} ₽</li>
+    {% empty %}
+        <li class="list-group-item text-muted">Услуг пока нет.</li>
+    {% endfor %}
+</ul>
+{% endblock %}
