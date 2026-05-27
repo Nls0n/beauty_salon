@@ -4,24 +4,25 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('app', '0002_alter_appointment_options_alter_category_options_and_more'),
+        ("app", "0002_alter_appointment_options_alter_category_options_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='employee',
-            name='services',
-            field=models.ManyToManyField(related_name='employees', through='app.EmployeeService', to='app.service', verbose_name='Оказываемые услуги'),
+            model_name="employee",
+            name="services",
+            field=models.ManyToManyField(
+                related_name="employees", through="app.EmployeeService", to="app.service", verbose_name="Оказываемые услуги"
+            ),
         ),
         migrations.AddField(
-            model_name='employeeservice',
-            name='is_primary_skill',
-            field=models.BooleanField(default=True, verbose_name='Является ли основным профилем мастера'),
+            model_name="employeeservice",
+            name="is_primary_skill",
+            field=models.BooleanField(default=True, verbose_name="Является ли основным профилем мастера"),
         ),
         migrations.AlterUniqueTogether(
-            name='employeeservice',
-            unique_together={('employee', 'service')},
+            name="employeeservice",
+            unique_together={("employee", "service")},
         ),
     ]

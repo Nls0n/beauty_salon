@@ -9,11 +9,7 @@ class Settings(BaseSettings):
     port: int = 5432
     host: str = Field(default="localhost")
 
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        env_file_encoding="utf-8",
-        extra="ignore"
-    )
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
 
 SETTINGS = Settings()

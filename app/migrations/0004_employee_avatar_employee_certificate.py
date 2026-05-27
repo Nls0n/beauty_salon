@@ -4,20 +4,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('app', '0003_employee_services_employeeservice_is_primary_skill_and_more'),
+        ("app", "0003_employee_services_employeeservice_is_primary_skill_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='employee',
-            name='avatar',
-            field=models.ImageField(blank=True, null=True, upload_to='avatars/', verbose_name='Фото мастера'),
+            model_name="employee",
+            name="avatar",
+            field=models.ImageField(blank=True, null=True, upload_to="avatars/", verbose_name="Фото мастера"),
         ),
         migrations.AddField(
-            model_name='employee',
-            name='certificate',
-            field=models.FileField(blank=True, null=True, upload_to='certificates/', verbose_name='Документ/Сертификат (PDF)'),
+            model_name="employee",
+            name="certificate",
+            field=models.FileField(blank=True, null=True, upload_to="certificates/", verbose_name="Документ/Сертификат (PDF)"),
         ),
     ]

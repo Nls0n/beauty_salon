@@ -1,7 +1,9 @@
 import random
+
 from django.core.management.base import BaseCommand
 from django.utils import timezone
-from app.models import Category, Employee, Service, EmployeeService, Client, Appointment
+
+from app.models import Appointment, Category, Client, Employee, EmployeeService, Service
 
 
 class Command(BaseCommand):
@@ -35,20 +37,15 @@ class Command(BaseCommand):
         ]
         services = []
         for s in services_data:
-            obj = Service.objects.create(
-                category=s["cat"],
-                title=s["title"],
-                price=s["price"],
-                duration_minutes=s["duration"]
-            )
+            obj = Service.objects.create(category=s["cat"], title=s["title"], price=s["price"], duration_minutes=s["duration"])
             services.append(obj)
 
         employee_names = [
-            ("Иван", "Топ-стилист"), 
-            ("Анна", "Колорист"), 
-            ("Мария", "Мастер ногтевого сервиса"), 
+            ("Иван", "Топ-стилист"),
+            ("Анна", "Колорист"),
+            ("Мария", "Мастер ногтевого сервиса"),
             ("Ольга", "Врач-косметолог"),
-            ("Дмитрий", "Барбер")
+            ("Дмитрий", "Барбер"),
         ]
         employees = []
         for name, spec in employee_names:
@@ -64,32 +61,24 @@ class Command(BaseCommand):
                 target_services = [s for s in services if s.category.title in ["Косметология", "Брови и ресницы"]]
 
             for idx, s in enumerate(target_services):
-                EmployeeService.objects.create(
-                    employee=emp,
-                    service=s,
-                    is_primary_skill=(idx == 0) 
-                )
+                EmployeeService.objects.create(employee=emp, service=s, is_primary_skill=(idx == 0))
 
         client_names = ["Елена", "Александр", "Наталья", "Михаил", "Татьяна", "Юлия", "Сергей", "Оксана"]
         clients = []
         for name in client_names:
             days_ago = random.randint(0, 15)
             reg_date = timezone.now() - timezone.timedelta(days=days_ago)
-            
-            cli = Client.objects.create(
-                first_name=name,
-                phone_number=f"+7999{random.randint(1000000, 9999999)}",
-                registration_date=reg_date
-            )
+
+            cli = Client.objects.create(first_name=name, phone_number=f"+7999{random.randint(1000000, 9999999)}", registration_date=reg_date)
             cli.favorite_masters.add(random.choice(employees))
             clients.append(cli)
 
-        statuses = ['created', 'confirmed', 'completed', 'canceled']
-        
+        statuses = ["created", "confirmed", "completed", "canceled"]
+
         for i in range(30):
             cli = random.choice(clients)
             emp = random.choice(employees)
-            
+
             available_services = emp.services.all()
             if not available_services.exists():
                 continue
@@ -97,25 +86,21 @@ class Command(BaseCommand):
 
             time_delta = random.randint(-10, 10)
             app_time = timezone.now() + timezone.timedelta(days=time_delta, hours=random.randint(-4, 4))
-            
+
             if app_time < timezone.now():
-                status = random.choice(['completed', 'canceled'])
+                status = random.choice(["completed", "canceled"])
             else:
-                status = random.choice(['created', 'confirmed'])
+                status = random.choice(["created", "confirmed"])
 
-            Appointment.objects.create(
-                client=cli,
-                employee=emp,
-                service=srv,
-                appointment_datetime=app_time,
-                status=status
+            Appointment.objects.create(client=cli, employee=emp, service=srv, appointment_datetime=app_time, status=status)
+
+        self.stdout.write(
+            self.style.SUCCESS(
+                f"Успешно сгенерировано:\n"
+                f"- {Category.objects.count()} категорий\n"
+                f"- {Service.objects.count()} услуг\n"
+                f"- {Employee.objects.count()} мастеров\n"
+                f"- {Client.objects.count()} клиентов\n"
+                f"- {Appointment.objects.count()} записей на прием"
             )
-
-        self.stdout.write(self.style.SUCCESS(
-            f"Успешно сгенерировано:\n"
-            f"- {Category.objects.count()} категорий\n"
-            f"- {Service.objects.count()} услуг\n"
-            f"- {Employee.objects.count()} мастеров\n"
-            f"- {Client.objects.count()} клиентов\n"
-            f"- {Appointment.objects.count()} записей на прием"
-        ))
+        )
