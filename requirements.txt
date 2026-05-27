@@ -4,14 +4,28 @@ annotated-types==0.7.0
     # via pydantic
 asgiref==3.11.1
     # via django
+brotli==1.2.0
+    # via fonttools
+cffi==2.0.0
+    # via weasyprint
+cssselect2==0.9.0
+    # via weasyprint
 django==6.0.5
     # via beauty-salon (pyproject.toml)
 dotenv==0.9.9
     # via beauty-salon (pyproject.toml)
+fonttools==4.63.0
+    # via weasyprint
+pillow==12.2.0
+    # via
+    #   beauty-salon (pyproject.toml)
+    #   weasyprint
 psycopg==3.3.4
     # via beauty-salon (pyproject.toml)
 psycopg-binary==3.3.4
     # via beauty-salon (pyproject.toml)
+pycparser==3.0
+    # via cffi
 pydantic==2.13.4
     # via
     #   beauty-salon (pyproject.toml)
@@ -20,12 +34,22 @@ pydantic-core==2.46.4
     # via pydantic
 pydantic-settings==2.14.1
     # via beauty-salon (pyproject.toml)
+pydyf==0.12.1
+    # via weasyprint
+pyphen==0.17.2
+    # via weasyprint
 python-dotenv==1.2.2
     # via
     #   dotenv
     #   pydantic-settings
 sqlparse==0.5.5
     # via django
+tinycss2==1.5.1
+    # via
+    #   cssselect2
+    #   weasyprint
+tinyhtml5==2.1.0
+    # via weasyprint
 typing-extensions==4.15.0
     # via
     #   pydantic
@@ -35,3 +59,12 @@ typing-inspection==0.4.2
     # via
     #   pydantic
     #   pydantic-settings
+weasyprint==68.1
+    # via beauty-salon (pyproject.toml)
+webencodings==0.5.1
+    # via
+    #   cssselect2
+    #   tinycss2
+    #   tinyhtml5
+zopfli==0.4.2
+    # via fonttools
