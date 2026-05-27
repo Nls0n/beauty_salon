@@ -1,5 +1,7 @@
 from django.contrib import admin
-
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+import weasyprint
 from .models import Appointment, Category, Client, Employee, EmployeeService, Service
 
 
@@ -7,12 +9,28 @@ class EmployeeServiceInline(admin.TabularInline):
     model = EmployeeService
     extra = 1
 
+@admin.action(description='📊 Скачать PDF-ведомость (WeasyPrint)')
+def export_to_pdf_action(modeladmin, request, queryset):
+    html_string = render_to_string('app/admin/workers_pdf.html', {'employees': queryset})
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="beauty_salon_staff.pdf"'
+    weasyprint.HTML(string=html_string).write_pdf(response)
+    return response
+
+@admin.action(description='🟢 Активировать выбранных мастеров')
+def make_active(modeladmin, request, queryset):
+    queryset.update(is_active=True)
+
+@admin.action(description='🔴 Деактивировать выбранных мастеров')
+def make_inactive(modeladmin, request, queryset):
+    queryset.update(is_active=False)
 @admin.register(Employee)
 class EmployeeAdmin(admin.ModelAdmin):
     list_display = ('id', 'first_name', 'specialty', 'is_active')
     list_filter = ('is_active', 'specialty')
     search_fields = ('first_name', 'specialty')
     inlines = [EmployeeServiceInline]
+    actions = [make_active, make_inactive, export_to_pdf_action]
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
@@ -67,3 +85,4 @@ class AppointmentAdmin(admin.ModelAdmin):
         return f"{obj.service.price} ₽"
 
     formatted_price.short_description = 'Стоимость'
+

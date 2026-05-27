@@ -1,5 +1,5 @@
 from django import forms
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import render, redirect, get_object_or_404
 
 from .models import Appointment, Employee, Service
 
@@ -60,3 +60,17 @@ def service_delete_view(request, pk):
         service.delete()
         return redirect('dashboard')
     return render(request, 'app/service_confirm_delete.html', {'service': service})
+
+def employee_detail_view(request, pk):
+    try:
+        employee = Employee.objects.get(pk=pk)
+    except Employee.DoesNotExist:
+        return redirect('dashboard') 
+    return render(request, 'app/employee_detail.html', {'employee': employee})
+
+def employee_delete_view(request, pk):
+    employee = get_object_or_404(Employee, pk=pk)
+    if request.method == 'POST':
+        employee.delete()
+        return redirect('dashboard') # Редирект после успешного удаления
+    return render(request, 'app/employee_confirm_delete.html', {'employee': employee})

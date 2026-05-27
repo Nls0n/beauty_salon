@@ -4,12 +4,10 @@ from django.utils import timezone
 
 
 class ActiveEmployeeManager(models.Manager):
-    """Кастомный менеджер для фильтрации только работающих сотрудников."""
     def get_queryset(self):
         return super().get_queryset().filter(is_active=True)
 
 class Category(models.Model):
-    """Категория услуг (например, 'Стрижки', 'Маникюр')."""
     title = models.CharField(max_length=100, verbose_name="Название категории")
 
     class Meta:
@@ -25,6 +23,9 @@ class Employee(models.Model):
     specialty = models.CharField(max_length=100, verbose_name="Специализация")
     is_active = models.BooleanField(default=True, verbose_name="Работает ли сейчас")
 
+    avatar = models.ImageField(upload_to='avatars/', null=True, blank=True, verbose_name="Фото мастера")
+    certificate = models.FileField(upload_to='certificates/', null=True, blank=True, verbose_name="Документ/Сертификат (PDF)")
+
     objects = models.Manager()
     active_objects = ActiveEmployeeManager()
 
@@ -38,9 +39,7 @@ class Employee(models.Model):
     class Meta:
         verbose_name = "Мастер"
         verbose_name_plural = "Мастера"
-
-    def __str__(self):
-        return self.first_name
+    def __str__(self): return self.first_name
 
 
 class Service(models.Model):
@@ -54,7 +53,6 @@ class Service(models.Model):
         verbose_name_plural = "Услуги"
 
     def get_absolute_url(self):
-        """Динамический URL для просмотра детальной информации об услуге."""
         return reverse('service_detail', kwargs={'pk': self.pk})
 
     def __str__(self):
@@ -62,7 +60,6 @@ class Service(models.Model):
 
 
 class EmployeeService(models.Model):
-    """Промежуточная таблица для Inline-отображения услуг мастера."""
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     service = models.ForeignKey(Service, on_delete=models.CASCADE)
 
