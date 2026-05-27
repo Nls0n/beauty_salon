@@ -1,7 +1,7 @@
 PYTHON = uv run python
 MANAGE = $(PYTHON) manage.py
 
-.PHONY: help run migrate migrations superuser shell check-db ruff format clean fix up install 
+.PHONY: help run migrate migrations superuser shell check-db ruff format clean fix up install seed
 
 
 install:
@@ -32,7 +32,8 @@ fix:
 
 format:
 	uv run ruff format
-
+seed:
+	$(MANAGE) seed_data
 clean:
 	find . -type d -name "__pycache__" -exec rm -rf {} +
 	find . -type f -name "*.pyc" -delete
