@@ -6,6 +6,7 @@ from django.utils import timezone
 
 from .models import Appointment, Client, Employee, Service, Category
 
+
 class ServiceForm(forms.ModelForm):
     class Meta:
         model = Service
@@ -119,39 +120,33 @@ def analytics_view(request):
     return render(request, "app/analytics.html", context)
 
 
-
 def home_view(request):
-    """Главная страница бьюти-салона с виджетами и поиском."""
-    
-    search_query = request.GET.get('q', '')
+    search_query = request.GET.get("q", "")
     search_results = None
-    
+
     if search_query:
-        search_results = Service.objects.filter(title__icontains=search_query).select_related('category')
+        search_results = Service.objects.filter(title__icontains=search_query).select_related("category")
 
-    # Выбираем активных мастеров, исключаем тех, у кого нет аватарки,
     # считаем количество их записей (агрегация COUNT) и сортируем по убыванию
-    top_masters = Employee.objects.filter(is_active=True)\
-                                  .annotate(appointments_count=Count('appointments'))\
-                                  .order_by('-appointments_count')[:4]
+    top_masters = Employee.objects.filter(is_active=True).annotate(appointments_count=Count("appointments")).order_by("-appointments_count")[:4]
 
-    categories = Category.objects.annotate(services_count=Count('services')).all()
-    
+    categories = Category.objects.annotate(services_count=Count("services")).all()
+
     # distinct() - получаем список уникальных специализаций в салоне
-    unique_specialties = Employee.objects.values_list('specialty', flat=True).distinct()
-    
+    unique_specialties = Employee.objects.values_list("specialty", flat=True).distinct()
+
     try:
-        vip_service = Service.objects.get(id=1) 
+        vip_service = Service.objects.get(id=1)
     except Service.DoesNotExist:
         vip_service = None
 
     context = {
-        'search_query': search_query,
-        'search_results': search_results,
-        'top_masters': top_masters,
-        'categories': categories,
-        'unique_specialties': unique_specialties,
-        'vip_service': vip_service,
+        "search_query": search_query,
+        "search_results": search_results,
+        "top_masters": top_masters,
+        "categories": categories,
+        "unique_specialties": unique_specialties,
+        "vip_service": vip_service,
     }
-    
-    return render(request, 'app/home.html', context)
+
+    return render(request, "app/home.html", context)

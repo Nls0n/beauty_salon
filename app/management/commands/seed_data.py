@@ -1,6 +1,8 @@
 import random
+
 from django.core.management.base import BaseCommand
 from django.utils import timezone
+
 from app.models import Appointment, Category, Client, Employee, EmployeeService, Service
 
 
@@ -36,24 +38,25 @@ class Command(BaseCommand):
             {"title": "Архитектура бровей", "price": 1000, "duration": 30, "cat": categories[3]},
             {"title": "Ламинирование ресниц", "price": 2000, "duration": 50, "cat": categories[3]},
         ]
-        
+
         services = []
         for s in services_data:
-            obj = Service.objects.create(
-                category=s["cat"], 
-                title=s["title"], 
-                price=s["price"], 
-                duration_minutes=s["duration"]
-            )
+            obj = Service.objects.create(category=s["cat"], title=s["title"], price=s["price"], duration_minutes=s["duration"])
             services.append(obj)
 
         employee_pool = [
-            ("Иван", "Топ-стилист"), ("Анна", "Колорист"), ("Дмитрий", "Барбер"), ("Екатерина", "Стилист"),
-            ("Мария", "Мастер ногтевого сервиса"), ("Надежда", "Мастер ногтевого сервиса"),
-            ("Ольга", "Врач-косметолог"), ("Ирина", "Косметолог-эстетист"),
-            ("Алина", "Лешмейкер"), ("Светлана", "Бровист")
+            ("Иван", "Топ-стилист"),
+            ("Анна", "Колорист"),
+            ("Дмитрий", "Барбер"),
+            ("Екатерина", "Стилист"),
+            ("Мария", "Мастер ногтевого сервиса"),
+            ("Надежда", "Мастер ногтевого сервиса"),
+            ("Ольга", "Врач-косметолог"),
+            ("Ирина", "Косметолог-эстетист"),
+            ("Алина", "Лешмейкер"),
+            ("Светлана", "Бровист"),
         ]
-        
+
         employees = []
         for name, spec in employee_pool:
             emp = Employee.objects.create(first_name=name, specialty=spec, is_active=True)
@@ -70,30 +73,39 @@ class Command(BaseCommand):
                 target_services = [s for s in services if s.category.title == "Брови и ресницы"]
 
             for idx, s in enumerate(target_services):
-                EmployeeService.objects.create(
-                    employee=emp, 
-                    service=s, 
-                    is_primary_skill=(idx == 0)
-                )
+                EmployeeService.objects.create(employee=emp, service=s, is_primary_skill=(idx == 0))
 
         client_names = [
-            "Елена", "Александр", "Наталья", "Михаил", "Татьяна", "Юлия", "Сергей", "Оксана",
-            "Андрей", "Олеся", "Владимир", "Кристина", "Артем", "Евгения", "Николай"
+            "Елена",
+            "Александр",
+            "Наталья",
+            "Михаил",
+            "Татьяна",
+            "Юлия",
+            "Сергей",
+            "Оксана",
+            "Андрей",
+            "Олеся",
+            "Владимир",
+            "Кристина",
+            "Артем",
+            "Евгения",
+            "Николай",
         ]
-        
+
         clients = []
         social_networks = ["vk.com/id", "t.me/"]
-        
+
         for name in client_names:
             days_ago = random.randint(0, 30)
             reg_date = timezone.now() - timezone.timedelta(days=days_ago)
             username = f"{name.lower()}{random.randint(10, 99)}"
 
             cli = Client.objects.create(
-                first_name=name, 
-                phone_number=f"+7999{random.randint(1000000, 9999999)}", 
+                first_name=name,
+                phone_number=f"+7999{random.randint(1000000, 9999999)}",
                 registration_date=reg_date,
-                social_profile=f"https://{random.choice(social_networks)}{username}"
+                social_profile=f"https://{random.choice(social_networks)}{username}",
             )
             cli.favorite_masters.add(*random.sample(employees, k=random.randint(1, 2)))
             clients.append(cli)
@@ -115,13 +127,7 @@ class Command(BaseCommand):
             else:
                 status = random.choice(["created", "confirmed"])
 
-            Appointment.objects.create(
-                client=cli, 
-                employee=emp, 
-                service=srv, 
-                appointment_datetime=app_time, 
-                status=status
-            )
+            Appointment.objects.create(client=cli, employee=emp, service=srv, appointment_datetime=app_time, status=status)
 
         self.stdout.write(
             self.style.SUCCESS(
