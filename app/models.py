@@ -68,8 +68,8 @@ class EmployeeService(models.Model):
         verbose_name_plural = "Услуги мастеров"
         unique_together = ("employee", "service")
 
-
-from django.db import models
+    def __str__(self):
+        return f"{self.employee.first_name} - {self.service.title}"
 
 
 class Client(models.Model):
@@ -115,5 +115,5 @@ class Appointment(models.Model):
         verbose_name = "Запись на прием"
         verbose_name_plural = "Записи на прием"
 
-    def __str__(self):
-        return f"Запись #{self.id} — {self.client.first_name}"
+    # def __str__(self):
+        # return f"Запись #{self.id} — {self.client.first_name}"

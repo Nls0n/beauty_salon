@@ -1,5 +1,5 @@
 from django.urls import path
-
+from debug_toolbar.toolbar import debug_toolbar_urls
 from . import views
 
 urlpatterns = [
@@ -14,4 +14,4 @@ urlpatterns = [
     path('masters/create/', views.employee_create_view, name='employee_create'),
     path('masters/<int:pk>/update/', views.employee_update_view, name='employee_update'),
     path('masters/<int:pk>/delete/', views.employee_delete_view, name='employee_delete'),
-]
+] + debug_toolbar_urls()

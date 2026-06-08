@@ -22,11 +22,14 @@ class ServiceForm(forms.ModelForm):
 
 def DashboardView(request):
 
-    appointments = Appointment.objects.select_related("client", "employee", "service").all()
+    appointments = Appointment.objects.all() #select_related("client", "employee", "service")
+
+
 
     employees = Employee.objects.prefetch_related("services").all()
 
     services = Service.objects.select_related("category").all()
+
 
     return render(request, "app/dashboard.html", {"appointments": appointments, "employees": employees, "services": services})
 

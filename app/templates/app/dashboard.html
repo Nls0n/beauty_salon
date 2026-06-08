@@ -1,0 +1,24 @@
+{% extends 'app/base.html' %}
+{% block content %}
+<h1>Панель управления</h1>
+
+<h3>Записи</h3>
+<ul>
+    {% for app in appointments %} 
+        <li>{{ app.status }} </li>
+    <!-- <li>{{ app.appointment_datetime }} — {{ app.client.first_name }} к {{ app.employee.first_name }} ({{ app.service.title }})</li> -->
+
+    {% endfor %}
+</ul>
+
+<h3>Услуги</h3>
+<a href="{% url 'service_create' %}" class="btn btn-success">+ Добавить услугу</a>
+<ul>
+    {% for service in services %}
+    <li>{{ service.title }} ({{ service.price }} руб.) 
+        <a href="{% url 'service_edit' service.pk %}">Ред.</a>
+        <a href="{% url 'service_delete' service.pk %}">Удалить</a>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

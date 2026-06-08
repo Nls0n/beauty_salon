@@ -1,0 +1,15 @@
+{% extends 'app/base.html' %}
+{% block content %}
+<h1>Аналитика</h1>
+<p>Всего записей: {{ total_appointments }}</p>
+<p> Есть ли пользователи без номера телефона: {{ has_broken_clients }} </p>
+<h3>Поиск "стрижка" (точное):</h3>
+<ul>{% for s in exact_match_services %}<li>{{ s.title }}</li>{% endfor %}</ul>
+
+<h3>Телефоны клиентов:</h3>
+<ul>{% for phone in client_phones %}<li>{{ phone }}</li>{% endfor %}</ul>
+
+<hr>
+<a href="?action=mass_discount" class="btn btn-warning">Применить скидку (-300 руб)</a>
+<a href="?action=clean_canceled" class="btn btn-danger">Удалить старые отмены</a>
+{% endblock %}
