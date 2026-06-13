@@ -1,12 +1,55 @@
 from django import forms
 from django.db import models
-from django.db.models import Count
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
 from .forms import EmployeeForm
 from .models import Appointment, Category, Client, Employee, Service
 
+from rest_framework import viewsets
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from django_filters.rest_framework import DjangoFilterBackend
+from django.db.models import Count, Sum
+
+from .models import Appointment, Service, Employee
+from .serializers import AppointmentSerializer, ServiceSerializer
+from .filters import ServiceFilter
+
+# Класс для услуг с фильтрацией
+class ServiceViewSet(viewsets.ModelViewSet):
+    queryset = Service.objects.all()
+    serializer_class = ServiceSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = ServiceFilter
+
+class AppointmentViewSet(viewsets.ModelViewSet):
+    serializer_class = AppointmentSerializer
+
+    def get_queryset(self):
+        qs = Appointment.objects.select_related('client', 'employee', 'service').all()
+        
+        # Разделение прав: админ видит всё, клиент — только своё
+        if self.request.user.is_staff:
+            return qs
+        return qs.filter(client=self.request.user)
+
+# Класс для статистики (Аннотации)
+class EmployeeStatsAPIView(APIView):
+    def get(self, request):
+        employees = Employee.objects.annotate(
+            total_appointments=Count('appointment'),
+            total_revenue=Sum('appointment__price_at_booking')
+        )
+        
+        data = []
+        for emp in employees:
+            data.append({
+                "name": emp.first_name,
+                "appointments_count": emp.total_appointments,
+                "revenue": emp.total_revenue or 0
+            })
+        return Response(data)
 
 class ServiceForm(forms.ModelForm):
     class Meta:

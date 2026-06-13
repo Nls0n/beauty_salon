@@ -1,6 +1,10 @@
-from django.urls import path
-from debug_toolbar.toolbar import debug_toolbar_urls
-from . import views
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import ServiceViewSet, AppointmentViewSet, EmployeeStatsAPIView
+
+router = DefaultRouter()
+router.register(r'services', ServiceViewSet, basename='api_services')
+router.register(r'appointments', AppointmentViewSet, basename='api_appointments')
 
 urlpatterns = [
     path("dashboard/", views.DashboardView, name="dashboard"),
@@ -14,4 +18,6 @@ urlpatterns = [
     path('masters/create/', views.employee_create_view, name='employee_create'),
     path('masters/<int:pk>/update/', views.employee_update_view, name='employee_update'),
     path('masters/<int:pk>/delete/', views.employee_delete_view, name='employee_delete'),
+    path('api/', include(router.urls)),
+    path('api/employees/stats/', EmployeeStatsAPIView.as_view(), name='api_employee_stats'),
 ] + debug_toolbar_urls()
