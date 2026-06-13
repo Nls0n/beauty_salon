@@ -1,9 +1,38 @@
 {% extends 'app/base.html' %}
+
+{% block title %}Подтверждение удаления - BeautySalon{% endblock %}
+
 {% block content %}
-<h2>Вы уверены, что хотите удалить услугу "{{ service.title }}"?</h2>
-<form method="post">
-    {% csrf_token %}
-    <button type="submit" class="btn btn-danger">Удалить</button>
-    <a href="{% url 'dashboard' %}" class="btn btn-secondary">Отмена</a>
-</form>
+<div class="row justify-content-center my-5 no-print">
+    <div class="col-md-6 col-lg-5">
+        <div class="card border-danger shadow">
+            <div class="card-header bg-danger text-white">
+                <h1 class="h5 mb-0">⚠️ Требуется подтверждение удаления</h1>
+            </div>
+            <div class="card-body text-center py-4">
+                <p class="mb-2">Вы собираетесь безвозвратно удалить следующую услугу из системы:</p>
+                <p class="fs-4 fw-bold text-danger mb-4">«{{ service.title }}»</p>
+                
+                <form method="post" aria-label="Форма подтверждения удаления услуги">
+                    {% csrf_token %}
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                        <button type="submit" class="btn btn-danger px-4" aria-label="Да, окончательно удалить услугу {{ service.title }}">
+                            Да, удалить
+                        </button>
+                        <a href="{% url 'dashboard' %}" class="btn btn-secondary px-4" aria-label="Отменить операцию и вернуться на панель управления">
+                            Отмена
+                        </a>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer text-muted small text-center">
+                Связанные промежуточные записи мастеров будут удалены каскадно (CASCADE).
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="d-none d-print-block alert alert-warning">
+    Действие: Запрос на удаление услуги "{{ service.title }}". Данная страница не предназначена для вывода на печать.
+</div>
 {% endblock %}

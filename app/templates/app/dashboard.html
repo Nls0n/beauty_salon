@@ -1,24 +1,83 @@
 {% extends 'app/base.html' %}
+
+{% block title %}Панель управления - BeautySalon{% endblock %}
+
 {% block content %}
-<h1>Панель управления</h1>
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4 h2">Оперативный дашборд администратора</h1>
+    </div>
+</div>
 
-<h3>Записи</h3>
-<ul>
-    {% for app in appointments %} 
-        <li>{{ app.status }} </li>
-    <!-- <li>{{ app.appointment_datetime }} — {{ app.client.first_name }} к {{ app.employee.first_name }} ({{ app.service.title }})</li> -->
+<section class="card mb-4 shadow-sm" aria-labelledby="appointments-heading">
+    <div class="card-header bg-secondary text-white">
+        <h2 id="appointments-heading" class="h5 mb-0">Текущие записи на услуги</h2>
+    </div>
+    <div class="card-body">
+        {% if appointments %}
+            <div class="table-responsive">
+                <table class="table table-striped align-middle">
+                    <thead>
+                        <tr>
+                            <th scope="col">Дата и время</th>
+                            <th scope="col">Клиент</th>
+                            <th scope="col">Мастер</th>
+                            <th scope="col">Услуга</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for app in appointments %}
+                        <tr>
+                            <td><strong>{{ app.appointment_datetime|date:"d.m.Y H:i" }}</strong></td>
+                            <td>{{ app.client.first_name }}</td>
+                            <td>{{ app.employee.first_name }}</td>
+                            <td><span class="badge bg-info text-dark">{{ app.service.title }}</span></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-muted mb-0">Активных записей на данный момент нет.</p>
+        {% endif %}
+    </div>
+</section>
 
-    {% endfor %}
-</ul>
-
-<h3>Услуги</h3>
-<a href="{% url 'service_create' %}" class="btn btn-success">+ Добавить услугу</a>
-<ul>
-    {% for service in services %}
-    <li>{{ service.title }} ({{ service.price }} руб.) 
-        <a href="{% url 'service_edit' service.pk %}">Ред.</a>
-        <a href="{% url 'service_delete' service.pk %}">Удалить</a>
-    </li>
-    {% endfor %}
-</ul>
+<section class="card mb-4 shadow-sm" aria-labelledby="services-heading">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+        <h2 id="services-heading" class="h5 mb-0">Управление прайс-листом услуг</h2>
+        <a href="{% url 'service_create' %}" class="btn btn-light btn-sm no-print" aria-label="Добавить новую услугу в прайс-лист">+ Добавить услугу</a>
+    </div>
+    <div class="card-body">
+        {% if services %}
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th scope="col">Категория</th>
+                            <th scope="col">Название услуги</th>
+                            <th scope="col">Стоимость</th>
+                            <th scope="col" class="text-end no-print">Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for service in services %}
+                        <tr>
+                            <td><small class="text-muted">{{ service.category.title }}</small></td>
+                            <td><strong>{{ service.title }}</strong></td>
+                            <td>{{ service.price }} руб.</td>
+                            <td class="text-end no-print">
+                                <a href="{% url 'service_edit' service.pk %}" class="btn btn-outline-warning btn-sm me-1" aria-label="Редактировать услугу {{ service.title }}">Ред.</a>
+                                <a href="{% url 'service_delete' service.pk %}" class="btn btn-outline-danger btn-sm" aria-label="Удалить услугу {{ service.title }}">Удалить</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-muted mb-0">Список услуг пуст.</p>
+        {% endif %}
+    </div>
+</section>
 {% endblock %}
