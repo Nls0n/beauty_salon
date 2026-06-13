@@ -46,7 +46,7 @@
 <section class="card mb-4 shadow-sm" aria-labelledby="services-heading">
     <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
         <h2 id="services-heading" class="h5 mb-0">Управление прайс-листом услуг</h2>
-        <a href="{% url 'service_create' %}" class="btn btn-light btn-sm no-print" aria-label="Добавить новую услугу в прайс-лист">+ Добавить услугу</a>
+        <a href="{% url 'service_create' %}" class="btn btn-light btn-sm no-print" aria-label="Add new to price list">+ Добавить услугу</a>
     </div>
     <div class="card-body">
         {% if services %}
@@ -67,8 +67,8 @@
                             <td><strong>{{ service.title }}</strong></td>
                             <td>{{ service.price }} руб.</td>
                             <td class="text-end no-print">
-                                <a href="{% url 'service_edit' service.pk %}" class="btn btn-outline-warning btn-sm me-1" aria-label="Редактировать услугу {{ service.title }}">Ред.</a>
-                                <a href="{% url 'service_delete' service.pk %}" class="btn btn-outline-danger btn-sm" aria-label="Удалить услугу {{ service.title }}">Удалить</a>
+                                <a href="{% url 'service_edit' service.pk %}" class="btn btn-outline-warning btn-sm me-1" aria-label="Edit service {{ service.title }}">Ред.</a>
+                                <a href="{% url 'service_delete' service.pk %}" class="btn btn-outline-danger btn-sm" aria-label="Delete service {{ service.title }}">Удалить</a>
                             </td>
                         </tr>
                         {% endfor %}

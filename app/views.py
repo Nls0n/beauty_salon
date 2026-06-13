@@ -38,8 +38,8 @@ class AppointmentViewSet(viewsets.ModelViewSet):
 class EmployeeStatsAPIView(APIView):
     def get(self, request):
         employees = Employee.objects.annotate(
-            total_appointments=Count('appointment'),
-            total_revenue=Sum('appointment__price_at_booking')
+            total_appointments=Count('appointments'),
+            total_revenue=Sum('appointments__price_at_booking')
         )
         
         data = []

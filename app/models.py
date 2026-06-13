@@ -110,6 +110,8 @@ class Appointment(models.Model):
 
     updated_at = models.DateTimeField(auto_now=timezone.now, verbose_name="Последнее изменение")
 
+    price_at_booking = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+
     class Meta:
         ordering = ["-appointment_datetime", "status"]
         verbose_name = "Запись на прием"

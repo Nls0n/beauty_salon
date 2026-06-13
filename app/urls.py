@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import ServiceViewSet, AppointmentViewSet, EmployeeStatsAPIView
-
+from . import views
 router = DefaultRouter()
 router.register(r'services', ServiceViewSet, basename='api_services')
 router.register(r'appointments', AppointmentViewSet, basename='api_appointments')
@@ -20,4 +20,4 @@ urlpatterns = [
     path('masters/<int:pk>/delete/', views.employee_delete_view, name='employee_delete'),
     path('api/', include(router.urls)),
     path('api/employees/stats/', EmployeeStatsAPIView.as_view(), name='api_employee_stats'),
-] + debug_toolbar_urls()
+] 
