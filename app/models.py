@@ -1,6 +1,7 @@
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
+from django.contrib.auth.models import User 
 
 
 class ActiveEmployeeManager(models.Manager):
@@ -72,7 +73,10 @@ class EmployeeService(models.Model):
         return f"{self.employee.first_name} - {self.service.title}"
 
 
+
 class Client(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='client_profile')
+    
     first_name = models.CharField(max_length=100, verbose_name="Имя")
     phone_number = models.CharField(max_length=20, verbose_name="Телефон")
     favorite_masters = models.ManyToManyField("Employee", blank=True, related_name="favorite_clients", verbose_name="Любимые мастера")

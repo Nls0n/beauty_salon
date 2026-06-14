@@ -4,6 +4,7 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from app.models import Appointment, Category, Client, Employee, EmployeeService, Service
+from django.contrib.auth.models import User # Не забудь добавить импорт в начало файла
 
 
 class Command(BaseCommand):
@@ -100,10 +101,17 @@ class Command(BaseCommand):
             days_ago = random.randint(0, 30)
             reg_date = timezone.now() - timezone.timedelta(days=days_ago)
             username = f"{name.lower()}{random.randint(10, 99)}"
+            phone_number = f"+7999{random.randint(1000000, 9999999)}"
+            
+            user = User.objects.create_user(
+                username=f"user_{phone_number}", 
+                password="password123"
+            )
 
             cli = Client.objects.create(
+                user=user,
                 first_name=name,
-                phone_number=f"+7999{random.randint(1000000, 9999999)}",
+                phone_number=phone_number,
                 registration_date=reg_date,
                 social_profile=f"https://{random.choice(social_networks)}{username}",
             )

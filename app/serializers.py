@@ -48,7 +48,21 @@ class AppointmentSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
+        request = self.context.get('request')
+        user = request.user
+        
+        if user.is_anonymous:
+            raise serializers.ValidationError({"detail": "Пользователь не авторизован"})
+        
+        # ИСПРАВЛЕНИЕ: берем не самого пользователя, а его профиль 'Client'
+        # Предполагаю, что у тебя в модели User есть связь 'client' или через related_name
+        try:
+            validated_data['client'] = user.client # или user.client_profile, в зависимости от твоего models.py
+        except AttributeError:
+            # Если связь называется иначе, проверь свой models.py
+            raise serializers.ValidationError({"detail": "У текущего пользователя нет профиля Client"})
+        
         service = validated_data['service']
         validated_data['price_at_booking'] = service.price
-        validated_data['client'] = self.context['request'].user
+        
         return super().create(validated_data)
