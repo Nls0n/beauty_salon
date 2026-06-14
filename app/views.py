@@ -32,7 +32,7 @@ class AppointmentViewSet(viewsets.ModelViewSet):
         # Разделение прав: админ видит всё, клиент — только своё
         if self.request.user.is_staff:
             return qs
-        return qs.filter(client=self.request.user)
+        return qs.filter(client=self.request.user.id)
 
 # Класс для статистики (Аннотации)
 class EmployeeStatsAPIView(APIView):
