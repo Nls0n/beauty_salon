@@ -20,12 +20,11 @@ class ServiceSerializer(serializers.ModelSerializer):
             return 15  # Скидка 15% для персонала
         return 0
 
-
 class AppointmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Appointment
-        fields = ['id', 'client', 'employee', 'service', 'appointment_datetime', 'price_at_booking']
-        read_only_fields = ['price_at_booking', 'client']
+        fields = ['id', 'employee', 'service', 'appointment_datetime', 'price_at_booking']
+        read_only_fields = ['client', 'price_at_booking']
 
     def validate_appointment_datetime(self, value):
         # Валидация БЛ: Запрет записи в прошлое
@@ -49,20 +48,18 @@ class AppointmentSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         request = self.context.get('request')
-        user = request.user
         
-        if user.is_anonymous:
-            raise serializers.ValidationError({"detail": "Пользователь не авторизован"})
+        # Проверяем, есть ли у юзера профиль клиента
+        if not hasattr(request.user, 'client_profile'):
+            raise serializers.ValidationError({
+                "detail": "У текущего пользователя нет привязанного профиля Client."
+            })
+            
+        # Присваиваем клиента из профиля юзера
+        validated_data['client'] = request.user.client_profile
         
-        # ИСПРАВЛЕНИЕ: берем не самого пользователя, а его профиль 'Client'
-        # Предполагаю, что у тебя в модели User есть связь 'client' или через related_name
-        try:
-            validated_data['client'] = user.client # или user.client_profile, в зависимости от твоего models.py
-        except AttributeError:
-            # Если связь называется иначе, проверь свой models.py
-            raise serializers.ValidationError({"detail": "У текущего пользователя нет профиля Client"})
-        
-        service = validated_data['service']
+        # (Опционально) Устанавливаем цену из сервиса
+        service = validated_data.get('service')
         validated_data['price_at_booking'] = service.price
         
         return super().create(validated_data)

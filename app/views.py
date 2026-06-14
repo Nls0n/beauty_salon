@@ -239,3 +239,17 @@ def employee_delete_view(request, pk):
         employee.delete()
         return redirect("employee_list")
     return render(request, "app/employee_confirm_delete.html", {"employee": employee})
+
+from django.contrib.auth import login
+from django.contrib.auth.forms import AuthenticationForm
+from django.shortcuts import render, redirect
+
+def login_view(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(data=request.POST)
+        if form.is_valid():
+            login(request, form.get_user())
+            return redirect('/api/appointments/') # Куда перенаправить после входа
+    else:
+        form = AuthenticationForm()
+    return render(request, 'login.html', {'form': form})
